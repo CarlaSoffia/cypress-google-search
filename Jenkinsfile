@@ -7,10 +7,9 @@ pipeline {
       parameters{
           string(name: 'SPEC', defaultValue:"cypress/integration/example.js", description: "Enter the cypress script path that you want to execute")
           choice(name: 'BROWSER', choices:['electron', 'chrome', 'edge', 'firefox'], description: "Select the browser to be used in your cypress tests")
-          booleanParam(name: 'skip_automated', defaultValue: true, description: 'Set to true to skip the automated')
+          booleanParam(name: 'skip_automated', defaultValue: false, description: 'Set to true to skip the automated')
           booleanParam(name: 'skip_sonar', defaultValue: true, description: 'Set to true to skip the sonar')
           booleanParam(name: 'skip_jmeter', defaultValue: true, description: 'Set to true to skip the jmeter')
-
       }
 
     stages {
