@@ -47,12 +47,6 @@ pipeline {
                     // Execute JMeter test
                     sh "${jmeterHome}/bin/jmeter -n -t ${jmeterScript} -l result.jtl"
                 }
-                post {
-                    always {
-                        // Archive JTL result file
-                        archiveArtifacts 'result.jtl'
-                    }                    
-                }
             }
            
         }
