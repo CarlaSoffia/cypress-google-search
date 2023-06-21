@@ -20,14 +20,11 @@ pipeline {
                 sh 'npm prune'
                 sh 'npm cache clean --force'
                 sh 'npm i'
+                sh 'apt-get install libgtk2.0-0 libgtk-3-0 libgbm-dev libnotify-dev libgconf-2-4 libnss3 libxss1 libasound2 libxtst6 xauth xvfb'
                 sh 'npx cypress run --config baseUrl="https://www.google.com" --browser ${BROWSER} --spec ${SPEC}'
             }
         }
         stage('SonarQube analysis') {
-            steps {
-                echo "SonarQube testing..."
-           }
-           
            when { expression { params.skip_sonar != true } }
             steps {
                     script {
@@ -39,11 +36,7 @@ pipeline {
             }
            
         }
-        stage('JMeter Test') {
-            steps {
-                echo "JMeter testing..."
-           }
-           
+        stage('JMeter Test') {           
            when { expression { params.skip_jmeter != true } } 
             steps {
                 script {
