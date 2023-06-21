@@ -19,7 +19,7 @@ pipeline {
                 sh 'npm prune'
                 sh 'npm cache clean --force'
                 sh 'npm i'
-                sh 'npx cypress run --config baseUrl="https://www.google.com" --browser ${BROWSER} --spec ${SPEC}'
+                sh 'npx cypress run --config baseUrl="https://34.18.43.208" --browser ${BROWSER} --spec ${SPEC}'
             }
         }
         stage('SonarQube analysis') {
@@ -52,7 +52,7 @@ pipeline {
         }
         stage('Perform manual testing...'){
             steps {
-                timeout(activity: true, time: 5) {
+                timeout(activity: true, time: 2, unit:'DAYS') {
                     input 'Proceed to production?'
                 }
            }
