@@ -47,6 +47,25 @@ pipeline {
                     // Execute JMeter test
                     sh "${jmeterHome}/bin/jmeter -n -t ${jmeterScript} -l result.jtl"
                 }
+                post {
+                    always {
+                        // Archive JTL result file
+                        archiveArtifacts 'result.jtl'
+                    }
+                    success {
+                        // Publish JMeter report using Performance plugin
+                        perfReport filterRegex:'', sourceDataFiles: 'result.jtl'
+                    }
+                    failure {
+                        script {
+                        def errorCount = sh(script: '''awk -F ',' '$8=="false"' result.jtl | wc -l''', returnStdout: true).trim()
+                            if (Integer.parseInt(errorCount) > 10) {
+                                error("Performance Test failed with more than 10 errors")
+                            }
+                        }
+                    }
+                    
+                }
             }
            
         }
