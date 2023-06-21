@@ -19,7 +19,6 @@ pipeline {
                 sh 'npm prune'
                 sh 'npm cache clean --force'
                 sh 'npm i'
-                sh 'sudo apt-get install libgtk2.0-0 libgtk-3-0 libgbm-dev libnotify-dev libgconf-2-4 libnss3 libxss1 libasound2 libxtst6 xauth xvfb'
                 sh 'npx cypress run --config baseUrl="https://www.google.com" --browser ${BROWSER} --spec ${SPEC}'
             }
         }
