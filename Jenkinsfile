@@ -27,7 +27,7 @@ pipeline {
            when { expression { params.skip_sonar != true } }
             steps {
                     script {
-                            scannerHome = tool 'sonar-scanner';
+                            scannerHome = tool 'SonarQube';
                         }
                     withSonarQubeEnv('SonarQube') {
                     sh "${scannerHome}/bin/sonar-scanner"
