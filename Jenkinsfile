@@ -19,7 +19,7 @@ pipeline {
                 sh 'npm prune'
                 sh 'npm cache clean --force'
                 sh 'npm i'
-                sh 'npx cypress run --config baseUrl="https://34.18.43.208" --browser ${BROWSER} --spec ${SPEC}'
+                sh 'npx cypress run --config baseUrl="https://34.18.35.125" --browser ${BROWSER} --spec ${SPEC}'
             }
         }
         stage('SonarQube analysis') {
