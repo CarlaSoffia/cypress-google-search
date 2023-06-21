@@ -19,7 +19,22 @@ pipeline {
                 sh 'npm prune'
                 sh 'npm cache clean --force'
                 sh 'npm i'
+                sh 'npm install --save-dev mochawesome mochawesome-merge mochawesome-report-generator'
                 sh 'npx cypress run --config baseUrl="https://34.18.35.125" --browser ${BROWSER} --spec ${SPEC}'
+            }
+            post {
+                success {
+                    publishHTML (
+                        target : [
+                            allowMissing: false,
+                            alwaysLinkToLastBuild: true,
+                            keepAll: true,
+                            reportDir: 'mochawesome-report',
+                            reportFiles: 'mochawesome.html',
+                            reportName: 'My Reports',
+                            reportTitles: 'The Report'])
+
+                }
             }
         }
         stage('SonarQube analysis') {
@@ -46,6 +61,16 @@ pipeline {
 
                     // Execute JMeter test
                     sh "${jmeterHome}/bin/jmeter -n -t ${jmeterScript} -l result.jtl"
+                }
+            }
+            post {
+                always {
+                    // Archive JTL result file
+                    archiveArtifacts 'result.jtl'
+                }
+                success {
+                    // Publish JMeter report using Performance plugin
+                    perfReport filterRegex:'', sourceDataFiles: 'result.jtl'
                 }
             }
            
