@@ -5,54 +5,25 @@ pipeline {
 
 
       parameters{
-          string(name: 'SPEC', defaultValue:"cypress/integration/exaple.js", description: "Enter the cypress script path that you want to execute")
+          string(name: 'SPEC', defaultValue:"cypress/integration/example.js", description: "Enter the cypress script path that you want to execute")
           choice(name: 'BROWSER', choices:['electron', 'chrome', 'edge', 'firefox'], description: "Select the browser to be used in your cypress tests")
       }
 
-      options {
-              ansiColor('xterm')
-      }
-
-      stages {
-        stage('Build/Deploy app to staging') {
-            steps {
-                sshPublisher(
-                    publishers: [
-                        sshPublisherDesc(
-                            configName: 'staging',
-                            transfers: [
-                                sshTransfer(
-                                    cleanRemote: false,
-                                    excludes: 'node_modules/',
-                                    execCommand: '''
-                                    cd cypress-google-search
-                                    npm i
-                                    pm2 restart start''',
-                                    execTimeout: 1200000,
-                                    flatten: false,
-                                    makeEmptyDirs: false,
-                                    noDefaultExcludes: false,
-                                    patternSeparator: '[, ]+',
-                                    remoteDirectory: '',
-                                    remoteDirectorySDF: false,
-                                    removePrefix: '',
-                                    sourceFiles: '**/*')],
-                        usePromotionTimestamp: false,
-                        useWorkspaceInPromotion: false,
-                        verbose: true)])
-            }
-        }
+    stages {
         stage('Run automated tests'){
-            steps {
+            /*steps {
                 sh 'npm prune'
                 sh 'npm cache clean --force'
                 sh 'npm i'
                 sh 'npm install --save-dev mochawesome mochawesome-merge mochawesome-report-generator'
                 sh 'rm -f mochawesome.json'
-                sh 'npx cypress run --config baseUrl="http://34.140.29.128" --browser ${BROWSER} --spec ${SPEC} --reporter mochawesome'
+                sh 'npx cypress run --config baseUrl="https://www.google.com" --browser ${BROWSER} --spec ${SPEC} --reporter mochawesome'
                 sh 'npx mochawesome-merge cypress/results/*.json -o mochawesome-report/mochawesome.json'
                 sh 'npx marge mochawesome-report/mochawesome.json'
-            }
+            }*/
+            steps {
+                echo "Run automated tests"
+           }
             post {
                 success {
                     publishHTML (
@@ -68,7 +39,16 @@ pipeline {
                 }
             }
         }
-
+        stage('SonarQube analysis') {
+            steps {
+                echo "SonarQube testing..."
+           }
+        }
+        stage('JMeter Test') {
+            steps {
+                echo "JMeter testing..."
+           }
+        }
         stage('Perform manual testing...'){
             steps {
                 timeout(activity: true, time: 5) {
@@ -77,11 +57,5 @@ pipeline {
            }
         }
 
-        stage('Release to production') {
-            steps {
-            // similar procedure as in the 'Build/ Deploy to staging' stage, suppressed here for cost saving purposes
-                echo "Deploying app in production environment"
-           }
-        }
     }
 }
